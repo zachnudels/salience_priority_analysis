@@ -1,0 +1,23 @@
+participants: [1, 2, 3, 4, 5]
+dependent_variable: relevance
+
+directories:
+  root: /Users/zach/RA_2023/Analysis/files_for_zach/real_data
+
+
+experiment_settings:
+  screenRes: [1920, 1080]
+  screenSize: [526, 296]
+  viewingDistance: 750
+  SOAs: [-100, -30,  -0,  30,    100]
+
+exclusion_criteria:
+    # Exclusion criteria
+    maxDist: 2.4  # Visual Degrees
+    minRT: 80
+    maxRT: 600
+
+plotting:
+  color1: '#C23D60'
+  color2: '#3DC29F'
+
