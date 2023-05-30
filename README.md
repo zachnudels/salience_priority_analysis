@@ -13,10 +13,16 @@ Once you have downloaded Anaconda, you can perform the following steps
 in the Anaconda Prompt to create the environment and install the required 
 dependencies:
 1. Create a new environment (called salience_priority_analysis) with 
-    ` conda create --name salience_priority_analysis --python=python3.9`
+    
+    `conda create --name salience_priority_analysis --python=python3.9`
 2. Activate the environment with
+    
     `conda activate salience_priority_analysis`
-3. Install the required packages
+3. Change directory to the root of this repo
+    
+    `cd <your_directory_path>/salience_priority_analysis`
+4. Install the required packages
+    
     `pip install -r requirements.txt`
 
 
