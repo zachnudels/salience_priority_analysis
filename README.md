@@ -9,8 +9,9 @@ for Python and R which makes managing such environments a bit easier. Included i
 the Anaconda download is the Spyder IDE which you can use to edit the python
 files in this package.
 
-Once you have downloaded Anaconda, you can perform the following steps to create the 
-environment and install the required dependencies:
+Once you have downloaded Anaconda, you can perform the following steps
+in the Anaconda Prompt to create the environment and install the required 
+dependencies:
 1. Create a new environment (called salience_priority_analysis) with 
     ` conda create --name salience_priority_analysis --python=python3.9`
 2. Activate the environment with
