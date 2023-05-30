@@ -290,9 +290,8 @@ def permute(x1, y1, x2=None, y2=None, newX=[None], sigma=20, nPerms=1000, baseli
 
     Example
     --------
-    >>> import numpy as np
+    >>> from SMART import SMART_Funcs as SF    >>>     >>> import numpy as np
     >>> import pandas as pd
-    >>> import SMART_Funcs as SF
     >>> 
     >>> data = pd.read_pickle("dataFile.p")
     >>> nPP = 10

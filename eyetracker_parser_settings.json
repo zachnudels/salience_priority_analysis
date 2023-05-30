@@ -1,5 +1,6 @@
 {
     "Eyetracker": "Eyelink",
+    "Processes": 8,
     "Eyelink": {
         "par": {
             "duplicateValues": "Yes",

@@ -1,56 +1,17 @@
-from Parser.EyeParser import readFile, sortDict
-from Parser.parseFuncs import eyeLinkDataParser
 import os
-import multiprocessing
 import yaml
-from cleanData_Exp1 import cleanData
-from ExtractRelevantData_Exp1 import extractData
-from plotting import plot
-from utils import extractTARS, find_files_with_extension, make_dir
-import pandas as pd
 import warnings
 
-PROCESSES = 8
+import pandas as pd
+
+from analysis.cleanData_Exp1 import cleanData
+from analysis.ExtractRelevantData_Exp1 import extractData
+from analysis.parse import parseEyeTrackerData
+from analysis.plotting import plot
+from utils import unzipData, find_files_with_extension, make_dir
 
 
-def parse_file(filename, parsed_dir):
-    settings = readFile('eyetracker_parser_settings.json')
-    eyelink = sortDict(settings['Eyelink']['par'])
-    result = eyeLinkDataParser(filename, **eyelink)
-    return result[0], result[1], parsed_dir
-
-
-def saveParsedData(parsedData):
-    last_slash_index = parsedData[0].rfind("/")+1
-    saveFilePath = os.path.join(parsedData[2], (parsedData[0][last_slash_index:-4] + 'Parsed.p'))
-    parsedData[1].to_pickle(saveFilePath)
-
-
-def parseEyeTrackerData(raw_data_dir, parsed_dir):
-    make_dir(parsed_dir)
-
-    with multiprocessing.Pool(PROCESSES) as pool:
-        results = []
-        for filename in find_files_with_extension(raw_data_dir, '.asc'):
-            print(filename)
-            results.append(pool.apply_async(parse_file,
-                                            args=(filename, parsed_dir,),
-                                            callback=saveParsedData))
-        for r in results:
-            r.wait()
-
-
-def main(params):
-    subjects = extractTARS(params['directories']['root'])
-    parseEyeTrackerData(params['directories']['root'], params['directories']['parsed_data'])
-    excluded_participants = cleanData(params)
-    final_participants = extractData(params, excluded_participants)
-    plot(params)
-
-    included_subjects = subjects
-    for excluded_participant in excluded_participants:
-        included_subjects.remove(excluded_participant)
-
+def construct_balance_tables():
     cleaned_data = []
 
     for filename in find_files_with_extension(params['directories']['clean_data'], '.p'):
@@ -70,6 +31,11 @@ def main(params):
     salience_df.to_csv(os.path.join(params['directories']['tables'], "salience_balances.csv"))
     SOA_df.to_csv(os.path.join(params['directories']['tables'], "SOA_balances.csv"))
 
+
+def check_subject_parity(included_subjects, excluded_participants, final_participants):
+    for excluded_participant in excluded_participants:
+        included_subjects.remove(excluded_participant)
+
     if included_subjects != final_participants:
         warnings.warn(f" \n\n WARNING!!! \nThe specified participants to use in analysis_settings does not correspond"
                       f" with the files found in the specified root folder."
@@ -83,11 +49,18 @@ def main(params):
                       f"\n WARNING!!! \n\n", category=Warning)
 
 
-if __name__ == '__main__':
-    maxCores = multiprocessing.cpu_count()
-    if int(PROCESSES) > maxCores:
-        PROCESSES = int(maxCores)
+def main(params):
+    subjects = unzipData(params['directories']['root'])
+    parseEyeTrackerData(params['directories']['root'], params['directories']['parsed_data'])
+    excluded_participants = cleanData(params)
+    final_participants = extractData(params, excluded_participants)
+    plot(params)
+    construct_balance_tables()
+    check_subject_parity(subjects, excluded_participants, final_participants)
 
+
+
+if __name__ == '__main__':
     with open(os.path.join(os.getcwd(), 'analysis_settings.yml'), 'r') as f_in:
         params = yaml.safe_load(f_in)
 
@@ -97,4 +70,3 @@ if __name__ == '__main__':
         make_dir(params['directories'][data_dir])
 
     main(params)
-

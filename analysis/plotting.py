@@ -1,9 +1,9 @@
-import os, matplotlib
+import os
 import matplotlib.pyplot as plt
-from SMARTClass import SMART
-import SMART_Funcs as SF
+from SMART.SMARTClass import SMART
+from SMART import SMART_Funcs as SF
 import numpy as np
-import funcs
+from . import funcs
 import pandas as pd
 from itertools import combinations
 

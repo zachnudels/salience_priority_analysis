@@ -7,8 +7,8 @@ Created on Fri Apr  1 13:01:07 2022
 
 
 import matplotlib.pyplot as plt 
-import numpy as np 
-import SMART_Funcs as SF 
+import numpy as np
+from SMART import SMART_Funcs as SF
 import pandas as pd 
 
 class analysis_funcs: 

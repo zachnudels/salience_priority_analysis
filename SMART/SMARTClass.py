@@ -9,8 +9,7 @@ import scipy
 import scipy.stats as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import SMART_Funcs as SF
-
+from SMART import SMART_Funcs as SF
 
 
 class SMART:
