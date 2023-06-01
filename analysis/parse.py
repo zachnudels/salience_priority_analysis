@@ -12,7 +12,7 @@ def parse_file(filename, parsed_dir, eyelink):
 
 
 def saveParsedData(parsedData):
-    last_slash_index = parsedData[0].rfind("/")+1
+    last_slash_index = parsedData[0].rfind(os.sep)+1
     saveFilePath = os.path.join(parsedData[2], (parsedData[0][last_slash_index:-4] + 'Parsed.p'))
     parsedData[1].to_pickle(saveFilePath)
 
@@ -30,7 +30,7 @@ def parseEyeTrackerData(raw_data_dir, parsed_dir):
     with multiprocessing.Pool(processes) as pool:
         results = []
         for filename in find_files_with_extension(raw_data_dir, '.asc'):
-            if filename[filename.rfind("/")+1] == ".":
+            if filename[filename.rfind(os.sep)+1] == ".":
                 continue
             print(filename)
             results.append(pool.apply_async(parse_file,

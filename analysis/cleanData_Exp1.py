@@ -14,8 +14,6 @@ import os
 from math import radians as to_radians
 
 
-
-
 # =============================================================================
 # Set varibales
 # =============================================================================
@@ -29,7 +27,8 @@ def pix_per_deg(h_res, screen_size, distance):
     pix = 2 * (distance * (np.tan(to_radians(0.5)))) * pix_per_mm
     return pix
 
-def centerToTopLeft(pointXY, screenXY, flipY = False):
+
+def centerToTopLeft(pointXY, screenXY, flipY=False):
     """
     Switch between screen coordinate systems.
     
@@ -37,12 +36,13 @@ def centerToTopLeft(pointXY, screenXY, flipY = False):
     Assumes negative y values are up and positve values are down
     if flip = True, assumes negative y values are down and positive up
     """
-    newX = pointXY[0] + (screenXY[0]/2)
+    newX = pointXY[0] + (screenXY[0] / 2)
     if flipY == False:
-        newY = pointXY[1] + (screenXY[1]/2)
+        newY = pointXY[1] + (screenXY[1] / 2)
     else:
-        newY = (pointXY[1]*-1) + (screenXY[1]/2)
+        newY = (pointXY[1] * -1) + (screenXY[1] / 2)
     return (newX, newY)
+
 
 def distBetweenPoints(point1, point2):
     """
@@ -61,7 +61,8 @@ def distBetweenPoints(point1, point2):
         The euclidian distance between the two points.
 
     """
-    return np.sqrt( (point1[0]-point2[0])**2 + (point1[1] - point2[1])**2 )
+    return np.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+
 
 # =============================================================================
 # Itterate over participants
@@ -90,9 +91,9 @@ def cleanData(params):
         filePath = os.path.join(dataDir, f"sub_{pp}Parsed.p")
         data = pd.read_pickle(filePath)
 
-    # =============================================================================
-    # Prealocate lists for storing data
-    # =============================================================================
+        # =============================================================================
+        # Prealocate lists for storing data
+        # =============================================================================
         data['DV_targXtl'] = np.zeros(len(data))
         data['DV_targYtl'] = np.zeros(len(data))
         data['DV_distrXtl'] = np.zeros(len(data))
@@ -106,31 +107,32 @@ def cleanData(params):
         data['DV_distrDist'] = np.zeros(len(data))
         data['DV_TargetHit'] = np.zeros(len(data))
 
-    # =============================================================================
-    # Itterate over trials
-    # =============================================================================
+        # =============================================================================
+        # Itterate over trials
+        # =============================================================================
         for tNr in range(len(data)):
 
             # Check if practice trial
             if data.DV_practice[tNr] == 'practice':  # change this back to practice
                 data.loc[tNr, 'DK_includedTrial'] = False
-                data.loc[tNr,'DV_ExclReason'] = 'PracticeTrial'
+                data.loc[tNr, 'DV_ExclReason'] = 'PracticeTrial'
                 continue
 
             # Recode target and distractor to top left coordinates
-            targx, targy = centerToTopLeft((data.DV_target_co_x[tNr], data.DV_target_co_y[tNr]) , screenSize,flipY = True)
-            distrx, distry = centerToTopLeft((data.DV_distractor_co_x[tNr], data.DV_distractor_co_y[tNr]) , screenSize, flipY = True)
+            targx, targy = centerToTopLeft((data.DV_target_co_x[tNr], data.DV_target_co_y[tNr]), screenSize, flipY=True)
+            distrx, distry = centerToTopLeft((data.DV_distractor_co_x[tNr], data.DV_distractor_co_y[tNr]), screenSize,
+                                             flipY=True)
             data.loc[tNr, 'DV_targXtl'] = targx
             data.loc[tNr, 'DV_targYtl'] = targy
             data.loc[tNr, 'DV_distrXtl'] = distrx
             data.loc[tNr, 'DV_distrYtl'] = distry
 
             # Extract all relevant saccade events and times
-            allSsaccX = data.DK_ssaccX[tNr] # X pos start
-            allSsaccY = data.DK_ssaccY[tNr] # Y pos start
-            allESaccX = data.DK_esaccX[tNr] # X pos end
-            allESaccY = data.DK_esaccY[tNr] # Y pos end
-            allSsacc = data.DK_ssacc[tNr] # Start time
+            allSsaccX = data.DK_ssaccX[tNr]  # X pos start
+            allSsaccY = data.DK_ssaccY[tNr]  # Y pos start
+            allESaccX = data.DK_esaccX[tNr]  # X pos end
+            allESaccY = data.DK_esaccY[tNr]  # Y pos end
+            allSsacc = data.DK_ssacc[tNr]  # Start time
 
             # Extract all relevant display events and latencies
             targOn = data.DV_target_display[tNr]
@@ -138,14 +140,14 @@ def cleanData(params):
 
             ### Get distanes for all saccades
             # Distance between start of saccade and center of the screen
-            fixSDist = distBetweenPoints(center,(allSsaccX, allSsaccY)) / pxPerDeg
+            fixSDist = distBetweenPoints(center, (allSsaccX, allSsaccY)) / pxPerDeg
 
             # Distance between end of saccade and center of the screen
-            fixEDist = distBetweenPoints(center,(allESaccX, allESaccY)) / pxPerDeg
+            fixEDist = distBetweenPoints(center, (allESaccX, allESaccY)) / pxPerDeg
 
             # Distance between the end of the saccade and the target and distractor
             targDist = distBetweenPoints((targx, targy), (allESaccX, allESaccY)) / pxPerDeg
-            distrDist = distBetweenPoints((distrx, distry),(allESaccX, allESaccY)) / pxPerDeg
+            distrDist = distBetweenPoints((distrx, distry), (allESaccX, allESaccY)) / pxPerDeg
 
             ### Itterate through saccade and exclude or include trial
             # First check if there are any saccades starting after target onset
@@ -173,7 +175,7 @@ def cleanData(params):
                         continue
                     elif fixSDist[sacc] > maxDist:
                         data.loc[tNr, 'DK_includedTrial'] = False
-                        data.loc[tNr,'DV_ExclReason'] = 'Incorrect_Fixation'
+                        data.loc[tNr, 'DV_ExclReason'] = 'Incorrect_Fixation'
                         break
                     # Check if saccade stated and ended near fixation (micro saccade o corrective saccade)
                     elif fixSDist[sacc] < maxDist and fixEDist[sacc] < maxDist:
@@ -181,32 +183,36 @@ def cleanData(params):
                     # Check if saccades landed far away from both target and distractor
                     elif targDist[sacc] > maxDist and distrDist[sacc] > maxDist:
                         data.loc[tNr, 'DK_includedTrial'] = False
-                        data.loc[tNr,'DV_ExclReason'] = 'Incorrect_saccade_landing'
+                        data.loc[tNr, 'DV_ExclReason'] = 'Incorrect_saccade_landing'
                         break
                     # Saccade shoulf not be to fast
                     elif latencies[sacc] < minRT or latencies[sacc] > maxRT:
                         data.loc[tNr, 'DK_includedTrial'] = False
-                        data.loc[tNr,'DV_ExclReason'] = 'Saccade_to_fast_or_slow'
+                        data.loc[tNr, 'DV_ExclReason'] = 'Saccade_to_fast_or_slow'
                         break
                     # This section should only be reached if no saccades are found
-                    elif sacc+1 == nSacc:
+                    elif sacc + 1 == nSacc:
                         data.loc[tNr, 'DK_includedTrial'] = False
-                        data.loc[tNr,'DV_ExclReason'] = 'Unexpected_saccade_pattern'
+                        data.loc[tNr, 'DV_ExclReason'] = 'Unexpected_saccade_pattern'
 
-    # =============================================================================
-    # Save the cleaned data
-    # =============================================================================
+        # =============================================================================
+        # Save the cleaned data
+        # =============================================================================
         if data.DK_includedTrial.sum() / len(data) >= 0.5:
             filePath = os.path.join(cleanDir, f"sub_{pp}.p")
             data.to_pickle(filePath)
 
             filePath = os.path.join(ANOVADir, f"sub_{pp}.csv")
-            df_ANOVA = data[['DV_target_salience', 'DV_TargetHit', 'DV_ISI', 'DV_RT', 'DK_includedTrial']]
+            df_ANOVA = data[['DV_target_salience',
+                             'DV_TargetHit',
+                             'DV_ISI',
+                             'DV_RT',
+                             'DK_includedTrial',
+                             'DV_ExclReason']]
             df_ANOVA.to_csv(filePath)
 
 
         else:
             excluded_subjects.append(pp)
-
 
     return excluded_subjects
