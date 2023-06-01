@@ -36,16 +36,8 @@ Similarly to the experiment, the analysis pipeline is configured using a yaml fi
 
 You should check the following settings before running the analysis script:
 
-1. `participants` - Before running the script you can change which participants 
-you want to include (if there is not parity between this list and the 
-files available in the chosen directory you will receive a warning upon the 
-script’s completion). 
-   - If the specified list is different from the list inferred from the
-   file extraction process, a warning will occur at the end of the analysis
-   - If any participants are excluded (because of too many invalid trials), a
-   warning will occur at the end of the experiment
-2. `dependent_variable` - This can either be set to `salience` or `relevance`. 
-3. `root` - this is where the data and plots will be saved. You must ensure that 
+1. `dependent_variables` - Will usually be `[salience, relevance]`. 
+2. `root` - this is where the data and plots will be saved. You must ensure that 
 the tar (or zip) file you have downloaded from surf drive is in the same directory 
 specified as the `root`.
 
