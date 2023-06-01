@@ -1,5 +1,4 @@
-participants: [1, 2, 3, 4, 5]
-dependent_variable: relevance
+dependent_variables: [relevance, salience]
 
 directories:
   root: /Users/zach/RA_2023/Analysis/files_for_zach/real_data
